@@ -12,7 +12,7 @@ You set the desired value for the min/max count and the value for "buffers" (mor
     cd openVDI
     chmod 700 ./init.sh
     ./init.sh
-    cp server/.env.example server/.env
+    cp server/.env-example server/.env
     ```
 
 2. Specify the necessary settings in `.env`
