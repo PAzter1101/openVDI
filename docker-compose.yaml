@@ -1,20 +1,19 @@
 networks:
-  guaca_network:
+  OpenVDI_network:
     driver: bridge
 
 # services
 services:
-  # guacd
   guacd:
     container_name: guacd_compose
     image: guacamole/guacd
     networks:
-      - guaca_network
+      - OpenVDI_network
     restart: always
     volumes:
     - ./drive:/drive:rw
     - ./record:/record:rw
-  # postgres
+
   postgres:
     container_name: postgres_guacamole_compose
     environment:
@@ -24,13 +23,12 @@ services:
       POSTGRES_USER: guacamole_user
     image: postgres:16.9-alpine
     networks:
-      - guaca_network
+      - OpenVDI_network
     restart: always
     volumes:
     - ./init:/docker-entrypoint-initdb.d:z
     - ./data:/var/lib/postgresql/data:Z
 
-  # guacamole
   guacamole:
     container_name: guacamole_compose
     group_add:
@@ -47,9 +45,23 @@ services:
       RECORDING_SEARCH_PATH: /record
     image: guacamole/guacamole
     networks:
-      - guaca_network
+      - OpenVDI_network
     volumes:
       - ./record:/record:rw
     ports:
     - 8080:8080/tcp
+    restart: always
+
+  openvdi:
+    build: server/
+    container_name: OpenVDI_compose
+    command: ["python3", "./main.py"]
+    depends_on:
+    - guacd
+    - postgres
+    - guacamole
+    env_file:
+      - ./server/.env
+    networks:
+      - OpenVDI_network
     restart: always
