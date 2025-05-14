@@ -1,0 +1,5 @@
+guacapy
+trio
+proxmoxer
+requests
+pydantic-settings
