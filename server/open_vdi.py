@@ -21,6 +21,7 @@ class OpenVDI():
             if len(await provider.get_vdi_by_status(status="running")) == 0:
                 await provider.run_vdi(1)
 
+        print("OpenVDI started!")
         while True:
             await self.state_update()
             await self.status_upgrade()

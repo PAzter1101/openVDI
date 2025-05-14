@@ -87,9 +87,15 @@ class PVE(Provider):
                 raise "Unable to delete VM: No VM with status stopped"
             vmid = min(time_creation, key=time_creation.get)
 
-        await self.stop_vdi(provider_id=str(vmid))
-        await sleep(1)
-        pve.nodes(self.get_node_by_vmid(vmid)).qemu(vmid).delete()
+        try:
+            await self.stop_vdi(provider_id=str(vmid))
+            pve.nodes(self.get_node_by_vmid(vmid)).qemu(vmid).delete()
+        except ResourceException as e:
+            if e.content in [f"501 Not Implemented: Method 'POST /nodes/qemu/{vmid}/status/stop' not implemented",
+                            f"501 Not Implemented: Method 'DELETE /nodes/qemu/{vmid}' not implemented"]:
+                return
+            else:
+                raise e
         await self.update_state()
 
     async def pve_refresh_vdi_ip(self):
@@ -187,11 +193,8 @@ class PVE(Provider):
                 pve.nodes(self.get_node_by_vmid(active_vdi[i]["vmid"])).qemu(active_vdi[i]["vmid"]).status.stop.post()
                 return
         else:
-            try:
-                pve.nodes(self.get_node_by_vmid(int(provider_id))).qemu(int(provider_id)).status.stop.post()
-            except ResourceException as e:
-                if e.content == f"501 Not Implemented: Method 'POST /nodes/qemu/{provider_id}/status/stop' not implemented":
-                    return
+            pve.nodes(self.get_node_by_vmid(int(provider_id))).qemu(int(provider_id)).status.stop.post()
+        
     def get_node_by_vmid(self, vmid : int) -> str:
         # todo:
         # caching
