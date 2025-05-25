@@ -3,7 +3,7 @@ OpenVDI is an open source Python application that orchestrates VDI and provides 
 
 OpenVDI automatically scales the number of VDIs in different "states".
 
-You set the desired value for the min/max count and the value for "buffers" (more about buffers can be found in the ["buffers" section](/README#buffers)), and OpenVDI will support machines according to these parameters.
+You set the desired value for the min/max count and the value for "buffers" (more about buffers can be found in the ["buffers" section](https://github.com/PAzter1101/openVDI/tree/feature/3?tab=readme-ov-file#buffers)), and OpenVDI will support machines according to these parameters.
 
 ## Installation
 1. Run:
