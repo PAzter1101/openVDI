@@ -4,10 +4,6 @@ from guaca import Guaca
 from trio import sleep
 from config import settings as s
 
-# count_active_session
-        #     count_connected_vdi
-        #         count_runned_vdi
-        #             count_stopped_vdi
 
 class OpenVDI():
     def __init__(self, providers : List[Provider], guaca : Guaca):
@@ -64,10 +60,6 @@ class OpenVDI():
                 await provider.run_vdi(s.MIN_RUNNED_VDI - provider_runned_vdi_count)
 
     async def buffers_upgrade(self):
-        # count_active_session
-        #     count_connected_vdi
-        #         count_runned_vdi
-        #             count_stopped_vdi
         not_connected_vdi_count = await self.guaca.get_count_not_connected_vdi()
         runned_vdi_count = 0
         for provider in self.providers:
@@ -94,4 +86,3 @@ class OpenVDI():
             if new_count_vdi >= s.MIN_VDI:
                 for provider in self.providers:
                     await provider.set_count_vdi(new_count_vdi)
-
