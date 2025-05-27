@@ -4,6 +4,7 @@ from .provider import Provider
 from proxmoxer import ProxmoxAPI
 from proxmoxer.core import ResourceException
 from config import settings as s
+from worker import Worker
 
 pve = ProxmoxAPI(
     s.PVE_HOST,
@@ -11,6 +12,8 @@ pve = ProxmoxAPI(
     password=s.PVE_PASS,
     verify_ssl=False
 )
+
+worker = Worker()
 
 pve_template_id = s.PVE_TEMPLATE_ID
 pve_vdi_prefix = s.PVE_VDI_PREFIX * 1000
@@ -182,6 +185,7 @@ class PVE(Provider):
             return
         for i in range(count):
             pve.nodes(self.get_node_by_vmid(no_active_vdi[i]["vmid"])).qemu(no_active_vdi[i]["vmid"]).status.start.post()
+            await worker.add_to_domain(provider="pve", provider_id=no_active_vdi[i]["vmid"])
 
     async def stop_vdi(self, count : int = 1, provider_id : str = None, except_ip : list[str] = None):
         await self.update_state()

@@ -60,8 +60,26 @@ services:
     - guacd
     - postgres
     - guacamole
+    - redis
     env_file:
       - ./server/.env
     networks:
       - OpenVDI_network
     restart: always
+
+  redis:
+    image: redis:8.0
+    restart: always
+    ports:
+      - "6379:6379"
+    # environment:
+      # - REDIS_PASSWORD=my-password
+      # - REDIS_PORT=6379
+      # - REDIS_DATABASES=16
+
+  worker:
+    build: worker/
+    container_name: worker_compose
+    command: ["python3", "./main.py"]
+    depends_on:
+    - redis
