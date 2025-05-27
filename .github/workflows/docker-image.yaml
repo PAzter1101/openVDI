@@ -1,0 +1,18 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image server
+      run: docker build . --file Dockerfile --tag openvdi-server:$(date +%s)
+    - name: Build the Docker image worker
+      run: docker build . --file Dockerfile --tag openvdi-worker:$(date +%s)
