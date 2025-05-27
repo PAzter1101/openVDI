@@ -13,6 +13,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image server
-      run: docker build . --file Dockerfile --tag openvdi-server:$(date +%s)
+      run: docker build server/ --file Dockerfile --tag openvdi-server:$(date +%s)
     - name: Build the Docker image worker
-      run: docker build . --file Dockerfile --tag openvdi-worker:$(date +%s)
+      run: docker build worker/ --file Dockerfile --tag openvdi-worker:$(date +%s)
