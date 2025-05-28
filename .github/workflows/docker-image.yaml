@@ -12,7 +12,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build the Docker image server
-      run: docker build server/ --file Dockerfile --tag openvdi-server:$(date +%s)
-    - name: Build the Docker image worker
-      run: docker build worker/ --file Dockerfile --tag openvdi-worker:$(date +%s)
+    - uses: adambirds/docker-compose-action@v1.5.0
+      with:
+        compose-file: "./docker-compose.yml"
+        up-flags: "--build"
+        down-flags: "--volumes"
+        test-container: "openvdi"
+    
+    - uses: adambirds/docker-compose-action@v1.5.0
+      with:
+        compose-file: "./docker-compose.yml"
+        up-flags: "--build"
+        down-flags: "--volumes"
+        test-container: "worker"
