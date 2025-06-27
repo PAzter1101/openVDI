@@ -8,6 +8,7 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir --timeout=100 -r requirements.txt
 
-COPY . .
+COPY /app .
 
 CMD ["python3", "./main.py"]
+# CMD [ "sleep", "99999" ]

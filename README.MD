@@ -33,19 +33,18 @@ You set the desired value for the min/max count and the value for "buffers" (mor
 │ minVDI │
 │        │
 ▼────────▼──────────┐
-│  User connected   │
-├───────────────────┴───────────────┐
-│                        Running    │
-├───────────────────▲───────────────▲───────────────┐
-│                   │               │    Stopped    │
-▲───────────────────┼───────────────┼───────────────▲───────▲
-│                   │               │               │       │
-│                   │               │               │       │
-│                   │               │               │       │
-│                   │   Buffer RV   │   Buffer SV   │       │
-│                   └───────────────┴───────────────┘       │
-│                           maxVDI                          │
-└───────────────────────────────────────────────────────────┘
+│                   ├───────────────┐
+│                   │               ├───────────────┐
+│  User connected   │    Running    │    Stopped    │
+▲───────────────────┼───────────────┼───────────────┼────▲
+│                           ▲               ▲            │
+│                           │               │            │
+│                           │               │            │
+│                       Buffer RV       Buffer SV        │
+│                                                        │
+│                                                        │
+└────────────────────────────────────────────────────────┘
+                           maxVDI
 ```
 
 In order for the user to always be able to quickly connect, openVDI supports different states of the VDI life cycle:

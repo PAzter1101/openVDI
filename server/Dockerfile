@@ -11,3 +11,4 @@ RUN pip install --no-cache-dir --timeout=100 -r requirements.txt
 COPY . .
 
 CMD ["python3", "./main.py"]
+# CMD [ "sleep", "99999" ]
