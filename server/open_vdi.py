@@ -1,7 +1,8 @@
 from typing import List
 from providers.provider import Provider
 from guaca import Guaca
-from trio import sleep
+# from trio import sleep
+from asyncio import sleep
 from config import settings as s
 
 

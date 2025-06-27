@@ -1,6 +1,8 @@
 import abc, uuid
 from typing import List
 from config import settings as s
+from worker import Worker
+
 
 class Provider(abc.ABC):
     def __init__(self):
@@ -9,9 +11,13 @@ class Provider(abc.ABC):
         self.min_vdi = s.MIN_VDI
         self.max_vdi = s.MAX_VDI
         self.vdi_list = []
+        
+        self.worker = Worker()
 
     async def _init(self):
+        await self.worker._init()
         await self.upgrade_status()
+
 
     async def upgrade_status(self):
         current_count = await self.get_count_vdi()

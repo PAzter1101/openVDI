@@ -1,0 +1,27 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: adambirds/docker-compose-action@v1.5.0
+      with:
+        compose-file: "./docker-compose.yml"
+        up-flags: "--build"
+        down-flags: "--volumes"
+        test-container: "openvdi"
+    
+    - uses: adambirds/docker-compose-action@v1.5.0
+      with:
+        compose-file: "./docker-compose.yml"
+        up-flags: "--build"
+        down-flags: "--volumes"
+        test-container: "worker"

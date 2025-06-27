@@ -1,9 +1,12 @@
 from typing import List
-from trio import sleep, move_on_after
+# from trio import sleep, move_on_after
+from asyncio import sleep, wait_for
 from .provider import Provider
+# from provider import Provider
 from proxmoxer import ProxmoxAPI
 from proxmoxer.core import ResourceException
 from config import settings as s
+
 
 pve = ProxmoxAPI(
     s.PVE_HOST,
@@ -101,10 +104,14 @@ class PVE(Provider):
     async def pve_refresh_vdi_ip(self):
         for vdi in self.pve_vdi_list:
             if vdi["status"] == "running":
-                with move_on_after(120):
-                    ip = await self.get_ip(vdi["node"], vdi["vmid"])
+                # with move_on_after(120):
+                ip = await wait_for(self.get_ip(vdi["node"], vdi["vmid"]),
+                                            timeout=120)
+                # async with asyncio.wait_for(120):
+                #     ip = await self.get_ip(vdi["node"], vdi["vmid"])
+                    
                 if ip is None:
-                    # raise TimeoutError(f'Can not get IP address of {vdi["vmid"]}')
+                    print(f'Can not get IP address of pve : {vdi["vmid"]}\nVDI will be removed!')
                     await self.delete_vdi(vdi["vmid"])
                 vdi["ip"] = ip
             elif vdi["status"] == "stopped":
@@ -182,6 +189,7 @@ class PVE(Provider):
             return
         for i in range(count):
             pve.nodes(self.get_node_by_vmid(no_active_vdi[i]["vmid"])).qemu(no_active_vdi[i]["vmid"]).status.start.post()
+            await self.worker.add_to_domain(provider="pve", provider_id=no_active_vdi[i]["vmid"])
 
     async def stop_vdi(self, count : int = 1, provider_id : str = None, except_ip : list[str] = None):
         await self.update_state()
